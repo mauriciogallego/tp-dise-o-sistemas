@@ -81,5 +81,7 @@ export class UsersService {
     return 'ok';
   }
 
-  async loadNotesPdf(file: Express.Multer.File) {}
+  async loadNotesPdf(file: Express.Multer.File) {
+    console.log(file);
+  }
 }

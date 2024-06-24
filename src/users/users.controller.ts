@@ -17,7 +17,15 @@ export class UsersController {
   @UseInterceptors(
     FileInterceptor('file', {
       fileFilter: (req: any, file: any, cb: any) => {
-        if (file.mimetype.match(/\/(xls|xlt|xla|pdf)$/)) {
+        if (!file) {
+          cb(new BadRequestException('EMPTY FILE'), false);
+        }
+        console.log(file.mimetype);
+        if (
+          file.mimetype.match(
+            /\/(vnd.openxmlformats-officedocument.spreadsheetml.sheet|xlsx|csv|xls|xlt|xla|pdf)$/,
+          )
+        ) {
           cb(null, true);
         } else {
           cb(
@@ -34,6 +42,10 @@ export class UsersController {
     @UploadedFile()
     file: Express.Multer.File,
   ) {
+    if (!file) {
+      throw new BadRequestException('EMPTY FILE');
+    }
+
     if (file.mimetype === 'pdf') {
       return this.userService.loadNotesPdf(file);
     }
