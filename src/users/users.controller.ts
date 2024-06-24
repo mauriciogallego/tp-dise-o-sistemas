@@ -21,11 +21,7 @@ export class UsersController {
           cb(new BadRequestException('EMPTY FILE'), false);
         }
         console.log(file.mimetype);
-        if (
-          file.mimetype.match(
-            /\/(vnd.openxmlformats-officedocument.spreadsheetml.sheet|xlsx|csv|xls|xlt|xla|pdf)$/,
-          )
-        ) {
+        if (file.mimetype.match(/\/(csv|pdf)$/)) {
           cb(null, true);
         } else {
           cb(

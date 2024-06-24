@@ -31,9 +31,10 @@ export class UsersService {
 
     const csv = await this.csvParser.parse(stream, Entity, 0, 0, {
       headers: ['nombre', 'apellido', 'materia', 'nota'],
-      mapValues: ({ header, value }) => {
-        if (!value && header !== 'lot') {
+      mapValues: ({ value }) => {
+        if (!value) {
           emptyFields = true;
+          return '';
         } else {
           return value;
         }
@@ -48,7 +49,6 @@ export class UsersService {
     const materias = await this.prisma.materia.findMany();
 
     const toCommit = [];
-
     csv.list.forEach((element) => {
       const alumno = alumnos.find(
         (i) => i.apellido === element.apellido && i.nombre === element.nombre,
@@ -59,7 +59,7 @@ export class UsersService {
         toCommit.push(
           this.prisma.nota.create({
             data: {
-              valor: element.nota,
+              valor: parseFloat(element.nota),
               alumno: {
                 connect: {
                   id: alumno.id,
